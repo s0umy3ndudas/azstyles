@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-ink-900 text-ivory-100 font-sans antialiased;
+    font-feature-settings: 'liga' 1, 'kern' 1;
+  }
+  ::selection {
+    @apply bg-champagne-500/30 text-ivory-50;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .luxury-divider {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(212, 184, 122, 0.4),
+      transparent
+    );
+  }
+  .grain-overlay {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(255, 255, 255, 0.018) 1px,
+      transparent 0
+    );
+    background-size: 28px 28px;
+  }
+}
