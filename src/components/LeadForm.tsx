@@ -1,6 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { Check } from 'lucide-react';
 import { submitLead } from '@/config';
+import Cal from '@calcom/embed-react';
 
 type FormValues = {
   annualIncome: string;
@@ -74,7 +75,7 @@ export default function LeadForm() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
-
+const [showCalendar, setShowCalendar] = useState(false);
   function update(field: keyof FormValues, value: string) {
     setValues((prev) => ({ ...prev, [field]: value }));
 
@@ -85,29 +86,38 @@ export default function LeadForm() {
     setSubmitError('');
   }
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+ 
+async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  e.preventDefault();
 
-    const found = validate(values);
-    setErrors(found);
+  const found = validate(values);
+  setErrors(found);
 
-    if (Object.keys(found).length > 0) return;
+  if (Object.keys(found).length > 0) return;
 
-    setSubmitting(true);
-    setSubmitError('');
+  setSubmitting(true);
+  setSubmitError('');
 
-    try {
-      await submitLead(values);
+  try {
+    await submitLead(values);
+
+    if (values.budget === 'under-25k') {
+      // Show thank-you message for lower-budget leads
       setSuccess(true);
       setValues(initialValues);
-    } catch {
-      setSubmitError(
-        'Something went wrong. Please try again.'
-      );
-    } finally {
-      setSubmitting(false);
+    } else {
+      // Display the embedded booking calendar
+      setShowCalendar(true);
     }
+  } catch {
+    setSubmitError(
+      'Something went wrong. Please try again.'
+    );
+  } finally {
+    setSubmitting(false);
   }
+}
+
 
   const fieldClass = (hasError: boolean) =>
     `${inputBase} ${
@@ -115,6 +125,37 @@ export default function LeadForm() {
         ? 'border-red-400/60 focus:border-red-400 focus:ring-red-400/50'
         : 'border-ivory-200/15 focus:border-champagne-500 focus:ring-champagne-500/40'
     }`;
+
+
+    if (showCalendar) {
+  return (
+    <section className="px-6 py-16 md:py-20">
+      <div className="mx-auto max-w-[1100px]">
+        <h2 className="text-center font-serif text-3xl font-light text-ivory-50 sm:text-4xl">
+          Book Your Personal Styling Consultation
+        </h2>
+
+        <p className="mt-4 text-center text-sm text-ivory-300/70">
+          Choose a convenient date and time for your consultation.
+        </p>
+
+        <div className="mt-10 overflow-hidden rounded-xl border border-champagne-500/30 bg-white">
+          <Cal
+            calLink="https://cal.com/som-das-jx3c5j/30min"
+            style={{
+              width: '100%',
+              height: '650px',
+              overflow: 'scroll',
+            }}
+            config={{
+              layout: 'month_view',
+            }}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
 
   if (success) {
     return (
@@ -316,6 +357,10 @@ export default function LeadForm() {
     </section>
   );
 }
+
+
+
+
 
 function Field({
   id,

@@ -1,4 +1,4 @@
-export const BRAND_NAME = 'LUXE STUDIO';
+export const BRAND_NAME = 'AZ STYLES';
 
 // Replace this URL with your own YouTube video.
 // Supports standard watch URLs (youtube.com/watch?v=ID), youtu.be/ID,
